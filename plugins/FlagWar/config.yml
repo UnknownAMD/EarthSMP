@@ -1,0 +1,163 @@
+################################################################################
+#                          Flag War for TownyAdvanced                          #
+#                       Copyright (c) 2021 TownyAdvanced                       #
+#   ========================================================================   #
+#       Licensed under the Apache License, Version 2.0 (the "License");        #
+#   you may not use this file except in compliance with the License.           #
+#   You may obtain a copy of the License at:                                   #
+#                                                                              #
+#                   http://www.apache.org/licenses/LICENSE-2.0                 #
+#                                                                              #
+#       Unless required by applicable law or agreed to in writing, software    #
+#   distributed under the License is distributed on an "AS IS" BASIS,          #
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   #
+#   See the License for the specific language governing permissions and        #
+#   limitations under the License.                                             #
+################################################################################
+
+# Note: Do not modify config_version, unless you want to regenerate your config
+config_version: 1.6
+
+# Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
+# for available translations. Custom translations are only supported if they are merged.
+translation: "en_US"
+
+# (Cosmetic) Show the ASCII banner on startup. Disable for cleaner/smaller server logs.
+show-startup-marquee: false
+
+# General Gameplay Rules
+rules:
+    # Disabling this effectively disables the whole plugin... but some event listeners will still operate.
+    allow_attacks: true
+
+    # Force attackers to only attack edge plots.
+    only_attack_borders: true
+
+    # Prevent attacks on townblocks with x neighbouring plots.
+    # When enabled plots will be protected from attack by neighbouring plots. Flag war will check North,
+    # East, South and West of the plot under attack. By default this requires 3 plots for protection,
+    # requiring attackers to begin from a corner. This Rule should be accompanied by the
+    # flag_takes_ownership_of_town_blocks: true Rule.
+    limit_attacks_based_on_neighbouring_plots: true
+
+    # How many neighbour plots are required to prevent an attack? Do not set this value to 0.
+    neighbouring_plots_required_to_prevent_attack: 3
+
+    # False: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
+    flag_unclaims_townblocks: true
+
+    # True: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
+    # This has no effect if flag_unclaims_townblocks is true.
+    flag_takes_ownership_of_town_blocks: true
+
+    # Will prevent players from performing certain actions while a town is flagged or is in cool-down.
+    prevent_interaction_while_flagged:
+        # Will prevent Towns from leaving Nations, setting HomeBlocks, and un-claiming land; prevent player desertion.
+        town: true
+        # Will prevent Nations from withdrawing money while actively flagged.
+        nation: true
+
+    # Cool-down period for prevented interactions after a flag has been placed.
+    # Recommended being equal or greater in value to the "flag.waiting_time".
+    prevented_interaction_cooldown: "10m"
+
+    # Are nations able to toggle on their neutrality, when FlagWar's allow_attacks is true?
+    nations_can_toggle_neutral: true
+
+    # Depth (meters) below sea-level a flag may be placed. (world-defined)
+    # Notice: Flags are still subject to submersion checks at this time.
+    flag_depth_allowance: 12
+
+    # Determines accuracy of location broadcasts.
+    # "towny" = Towny World Coordinates (`/towny map`)
+    # "precise" = X,Y,Z coordinates of the flag's base block.
+    flag_broadcast_accuracy: "towny"
+
+player_limits:
+    min_online_in_town: 2
+    min_online_in_nation: 3
+    min_online_in_town_to_attack: 2
+    min_online_in_nation_to_attack: 3
+    max_active_flags_per_player: 1
+
+# Defines the War Flag structure.
+# If the defined block is air, or is affected by gravity, it will be overridden by our defaults.
+flag:
+    waiting_time: "1m" # Time to capture a plot.
+    base_block: 'OAK_FENCE' # Block required to place a flag.
+    light_block: 'TORCH' # TORCH and SOUL_TORCH good. REDSTONE_TORCH questionable.
+
+# Defines the War Flag timer blocks.
+timer_blocks:
+    # Will use the classic wool palette if true.
+    use_default: true
+    # Will set the timer blocks. Each entry is allotted an equal amount of time.
+    # Use multiple entries to achieve more granularity. Case-insensitive.
+    blocks:
+        - lime_terracotta
+        - green_terracotta
+        - blue_terracotta
+        - cyan_terracotta
+        - light_blue_terracotta
+        - gray_terracotta
+        - white_terracotta
+        - pink_terracotta
+        - orange_terracotta
+        - red_terracotta
+
+# Defines War Flag Hologram settings
+# Requires HolographicDisplays
+holograms:
+    # If true, and if HolographicDisplays is present, holograms will appear when a war flag is placed.
+    enabled: true
+    # Defines the lines of the hologram. The number indicates the line number. Starts at zero.
+    # Use an item type to add a floating item.
+    # Use a text type to add text.
+    # Use the timer type to indicate the time left. Only one timer line may be used.
+    # The timer formatting can be customised as described here:
+    # https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/util/Formatter.html
+    # Argument Index: Seconds is the first argument, minutes the second argument, and hours the third argument.
+    lines:
+        0:
+            type: item
+            data: DIAMOND_SWORD
+        1:
+            type: text
+            data: "&c&lWar Flag"
+        2:
+            type: timer
+            data: "&aTime Left: %2$d:%1$02d"
+
+# Define Beacon Structure
+beacon:
+    draw: true
+    radius: 3
+    height_above_flag.min: 3
+    height_above_flag.max: 64
+    wireframe_block: 'GLOWSTONE'
+
+# Define Economy Transactions
+economy:
+    town_block_captured: 10.0
+    home_block_captured: 100.0
+    war_flag_cost: 10.0
+    attack_defended_reward: 10.0
+
+# Define what is allowed to take place in TownBlocks which have attacks on-going.
+warzone:
+    # List of materials that can be modified in a warzone.
+    # '*' = Allow all materials.
+    # Prepend a '-' in front of a material to remove it. Used in conjunction with when you use '*'.
+    # Eg: '*,-chest,-furnace'
+    editable_materials: tnt,oak_fence,birch_fence,spruce_fence,jungle_fence,dark_oak_fence,acacia_fence,ladder,oak_door,birch_door,spruce_door,jungle_door,dark_oak_door,acacia_fence,iron_door,fire
+    item_use: true
+    switch: true
+
+    # Add '-fire' to editable materials for complete protection when setting is false. This prevents fire to be created and spread.
+    fire: true
+    explosions: true
+    explosions_break_blocks: true
+
+extra:
+    # If enabled, show additional debug messages as warnings. Recommended keeping these disabled unless requested.
+    debug: false
